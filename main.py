@@ -51,3 +51,6 @@ predicted_labels = label_encoder.inverse_transform(predicted_labels)
 # Расчет метрики F1
 f1 = f1_score(test_labels, predicted_labels, average='weighted')
 print("F1-мера на тестовых данных:", f1)
+
+print(X_pr.index)
+print(X_pr.index.isin(train.index))
