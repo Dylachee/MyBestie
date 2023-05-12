@@ -1,0 +1,6 @@
+#PyTorch
+torch
+pandas
+scikit-learn
+kyrgyz_stemmer
+kyrgyz_language_toolkit
