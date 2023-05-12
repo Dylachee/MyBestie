@@ -1,5 +1,3 @@
-import re
-import csv
 import nltk
 import pandas as pd
 from sklearn.linear_model import LogisticRegression
@@ -31,16 +29,17 @@ def split_morphemes(word):
                 return [root, affix]
     return [word]  # Если нет совпадений, возвращаем слово как одну морфему
 
-# Загрузка тренировочных и тестовых данных
+# Загрузка тренировочных данных
 train_data = load_data('train_lr.csv')
+train_data = train_data[:1000]  # Ограничение до 1000 строк
+
+# Загрузка тестовых данных
 test_data = load_data('test_lr.csv')
 
 # Извлечение слов и их меток из данных
-train_words = train_data['Word'].tolist()
-test_words = test_data['Word'].tolist()
-train_labels = train_data['Tag'].tolist()
-
-
+train_words = train_data['Word'].tolist()[:1000]  # Используйте только первые 1000 слов
+train_labels = train_data['Tag'].tolist()[:1000]  # Используйте только первые 1000 меток
+test_words = test_data['Word'].tolist()  # Получите все слова из тестовых данных
 
 # Токенизация слов
 train_tokens = nltk.word_tokenize(' '.join(train_words))
@@ -54,7 +53,7 @@ test_morphemes = [split_morphemes(word) for word in test_tokens]
 train_df = pd.DataFrame({'Word': train_tokens, 'Morphemes': train_morphemes})
 train_df['Root'] = train_df['Morphemes'].apply(lambda x: x[0])
 train_df['Affix'] = train_df['Morphemes'].apply(lambda x: x[1] if len(x) > 1 else '')
-train_df['Tag'] = train_labels
+train_df['Tag'] = train_labels[:1000]  # Используйте только первые 1000 меток
 
 # Создание датафрейма с тестовыми данными
 test_df = pd.DataFrame({'Word': test_tokens, 'Morphemes': test_morphemes})
@@ -77,3 +76,4 @@ predictions = lr.predict(test_X)
 submission_file = 'my_submission.csv'
 test_df['Tag'] = predictions
 test_df[['Word', 'Root', 'Affix', 'Tag']].to_csv(submission_file, index=False, header=True)
+
